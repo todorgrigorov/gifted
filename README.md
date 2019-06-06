@@ -17,12 +17,21 @@ OR
     
 The app should be running on **localhost:5000**
 
-## API Reference
+## Code Points
 
 App consists of 2 main components and some service code.
 
-* Header component for title, search bar & views toggle
-* Feed component for the gif lists
+* **Header** component for title, search bar & views toggle
+* **Feed** component for the gif lists
+* Feed lists are built with baseweb's Block component as a grid layout
+* Depending on the view, the quality of the displayed gifs is changed for performance gain
+* **BottomScrollListener** is a third-party component which is used to detect browser scroll
+* For simplicity sake, communication between the Header & Feed components is done via basic event emitter interface, rather than Redux or other React API
+* When the views are switched, no additional requests are made -- rather, the data in the state is accomodated for displaying in 1 or 3 lists
+* When searching, the request to the remote API is made on input blur
+* **axios** is used as http client for all requests
+* **url-builder** is a simple service to construct urls by given path & query parameters (if any)
+* In the single gif feed, the width of the items is fixed, while the height is determined by the aspect of the incoming gif
 
 ## Tests
 

@@ -28,7 +28,7 @@ export default class Feed extends Component {
 
     async componentWillMount() {
         eventEmitter.addListener(events.search, async data => {
-            if (this.state.search !== data.search) {
+            if (data.search && this.state.search !== data.search) {
                 this.setState({
                     search: data.search,
                     pageOffset: 0,
