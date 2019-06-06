@@ -35,5 +35,5 @@ OR
 * Display GIF's title in UI;
 * Handle connection failures and show message in UI, e.g. "API is down";
 * Check if the search input can be triggered via Enter key;
-* Iimplement GIF caching;
+* Implement GIF caching;
 * Implement image download cancelation when searching.
