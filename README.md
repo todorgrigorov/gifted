@@ -32,6 +32,7 @@ App consists of 2 main components and some service code.
 * **axios** is used as http client for all requests
 * **url-builder** is a simple service to construct urls by given path & query parameters (if any)
 * In the single gif feed, the width of the items is fixed, while the height is determined by the aspect of the incoming gif
+* The layout for the 3 column view is actually built with 5 columns -- the left most and right most acting as "buffer" by aggregating the remaining width of the page via flex layout
 
 ## Tests
 
@@ -43,7 +44,7 @@ OR
 
 ## TODOs
 
-* Show no data found/end of list message in UI
+* Validation for the search input
 * Display GIF's title in UI
 * Handle connection failures and show message in UI, e.g. "API is down"
 * Check if the search input can be triggered via Enter key
