@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.19.0",
+    "baseui": "^7.0.1",
     "react": "^16.8.6",
+    "react-bottom-scroll-listener": "^2.1.2",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "styletron-engine-atomic": "^1.3.0",
+    "styletron-react": "^5.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
