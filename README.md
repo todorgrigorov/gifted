@@ -9,17 +9,20 @@ The UI is based on Uber's design language https://baseweb.design/.
 
 ## Build & Run
 
-    yarn build && serve -s build
+    yarn install && yarn build && serve -s build
 
 OR
 
-    npm start && serve -s build
+    npm install && npm build && serve -s build
     
-The app should be running on **localhost:5000**.
+The app should be running on **localhost:5000**
 
 ## API Reference
 
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
+App consists of 2 main components and some service code.
+
+* Header component for title, search bar & views toggle
+* Feed component for the gif lists
 
 ## Tests
 
@@ -31,9 +34,9 @@ OR
 
 ## TODOs
 
-* Show no data found/end of list message in UI;
-* Display GIF's title in UI;
-* Handle connection failures and show message in UI, e.g. "API is down";
-* Check if the search input can be triggered via Enter key;
-* Implement GIF caching;
-* Implement image download cancelation when searching.
+* Show no data found/end of list message in UI
+* Display GIF's title in UI
+* Handle connection failures and show message in UI, e.g. "API is down"
+* Check if the search input can be triggered via Enter key
+* Implement GIF caching
+* Implement image download cancellation when searching
