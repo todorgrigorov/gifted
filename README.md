@@ -23,13 +23,17 @@ Depending on the size of the project, if it is small and simple enough the refer
 
 ## Tests
 
-Describe and show how to run the tests with code examples.
+    yarn test
+
+OR
+
+    npm test
 
 ## TODOs
 
 * Show no data found/end of list message in UI;
 * Display GIF's title in UI;
-* Handle connection failure and show message in UI, e.g. API is down;
+* Handle connection failures and show message in UI, e.g. "API is down";
 * Check if the search input can be triggered via Enter key;
 * Iimplement GIF caching;
 * Implement image download cancelation when searching.
