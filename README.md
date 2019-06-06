@@ -5,6 +5,7 @@
 This is a front-end coding challenge with create-react-app.
 It provides infinite list of gifs via the GIPHY Public API with virtualization & searching.
 The list can be of single gif as well as in columns, mimicking the GIPHY web site.
+The UI is based on Uber's design language https://baseweb.design/.
 
 ## Build & Run
 
