@@ -11,9 +11,12 @@ export default {
         events.set(event, events.get(event).concat(callback));
     },
     emit(event, data = {}) {
-        const callbacks = events.get(event);
+        const callbacks = this.getSubscribers(event);
         for (const c of callbacks) {
             c(data);
         }
+    },
+    getSubscribers(event) {
+        return events.get(event);
     }
 }
