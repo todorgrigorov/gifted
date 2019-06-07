@@ -5,6 +5,13 @@ import { Block } from 'baseui/block';
 import BottomScrollListener from 'react-bottom-scroll-listener';
 import { Spinner } from 'baseui/spinner';
 import { Heading, HeadingLevel } from 'baseui/heading';
+import {
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    ModalButton,
+} from 'baseui/modal';
 
 import ImageList from './ImageList';
 import http from '../../services/http';
@@ -26,7 +33,12 @@ export default class Feed extends Component {
         search: '',
         view: 'single',
         searchNoDataFound: false,
-        allDataLoaded: false
+        allDataLoaded: false,
+        imageModalOpen: false,
+        imageModalTitle: '',
+        imageModalHeight: 0,
+        imageModalWidth: 0,
+        imageModalUrl: '',
     }
 
     async componentWillMount() {
@@ -52,6 +64,20 @@ export default class Feed extends Component {
     }
 
     render() {
+        if (this.state.searchNoDataFound) {
+            return (
+                <Block display='grid' justifyItems='center' paddingTop='100px'>
+                    <HeadingLevel>
+                        <Heading styleLevel={4}>No GIFs found for keyword '{this.state.search}'.</Heading>
+                    </HeadingLevel>
+                </Block>
+            )
+        } else {
+            return this.renderLists();
+        }
+    }
+
+    renderLists() {
         const isSingle = this.state.view === 'single';
 
         const itemProps = {
@@ -72,46 +98,97 @@ export default class Feed extends Component {
             },
         };
 
-        if (this.state.searchNoDataFound) {
-            return (
-                <Block display='grid' justifyItems='center' paddingTop='100px'>
-                    <HeadingLevel>
-                        <Heading styleLevel={4}>No GIFs found for keyword '{this.state.search}'.</Heading>
-                    </HeadingLevel>
-                </Block>
-            )
+        return (
+            <Block paddingTop='100px' paddingBottom='100px'>
+                {this.renderImageModal()}
+
+                <BottomScrollListener offset={0} debounce={0} onBottom={this.onScrollToBottom.bind(this)} />
+
+                {this.state.gifs && isSingle &&
+                    <ImageList onImageClick={this.onImageClick.bind(this)} showProgress={!this.state.allDataLoaded} size='medium' gifs={this.state.gifs} />
+                }
+
+                {this.state.gifs && !isSingle &&
+                    <FlexGrid
+                        flexGridColumnCount={5}
+                        flexGridColumnGap="scale800">
+
+                        <FlexGridItem {...itemProps}></FlexGridItem>
+
+                        <FlexGridItem {...narrowItemProps}>
+                            <ImageList onImageClick={this.onImageClick.bind(this)} size='small' gifs={this.getListItems(1)} />
+                        </FlexGridItem>
+                        <FlexGridItem {...narrowItemProps}>
+                            <ImageList onImageClick={this.onImageClick.bind(this)} showProgress size='small' gifs={this.getListItems(2)} />
+                        </FlexGridItem>
+                        <FlexGridItem {...narrowItemProps}>
+                            <ImageList onImageClick={this.onImageClick.bind(this)} size='small' gifs={this.getListItems(3)} />
+                        </FlexGridItem>
+
+                        <FlexGridItem {...itemProps}></FlexGridItem>
+
+                    </FlexGrid>}
+            </Block>
+        )
+    }
+
+    renderImageModal() {
+        return (
+            <Modal
+                // the modal gets clipped on the right for no reason so add additional 50 pixel
+                size={this.getImageModalWidth() + 50}
+                onClose={() => this.onImageModalClose()}
+                isOpen={this.state.imageModalOpen} >
+                <ModalHeader>{this.state.imageModalTitle}</ModalHeader>
+                <ModalBody>
+                    <img
+                        alt={this.state.imageModalTitle}
+                        src={this.state.imageModalUrl}
+                        height={this.getImageModalHeight()}
+                        width={this.getImageModalWidth()}
+                    />
+                </ModalBody>
+            </Modal>
+        )
+    }
+
+    getImageModalHeight() {
+        if (this.state.imageModalHeight <= 450) {
+            return this.state.imageModalHeight * 2;
+        } else if (this.state.imageModalHeight > window.outerHeight) {
+            return window.outerHeight;
         } else {
-            return (
-                <Block paddingTop='100px' paddingBottom='100px'>
-                    <BottomScrollListener offset={0} debounce={0} onBottom={this.onScrollToBottom.bind(this)} />
-
-                    {this.state.gifs && isSingle &&
-                        <ImageList showProgress={!this.state.allDataLoaded} size='medium' gifs={this.state.gifs} />
-                    }
-
-                    {this.state.gifs && !isSingle &&
-                        <FlexGrid
-                            flexGridColumnCount={5}
-                            flexGridColumnGap="scale800">
-
-                            <FlexGridItem {...itemProps}></FlexGridItem>
-
-                            <FlexGridItem {...narrowItemProps}>
-                                <ImageList size='small' gifs={this.getListItems(1)} />
-                            </FlexGridItem>
-                            <FlexGridItem {...narrowItemProps}>
-                                <ImageList showProgress size='small' gifs={this.getListItems(2)} />
-                            </FlexGridItem>
-                            <FlexGridItem {...narrowItemProps}>
-                                <ImageList size='small' gifs={this.getListItems(3)} />
-                            </FlexGridItem>
-
-                            <FlexGridItem {...itemProps}></FlexGridItem>
-
-                        </FlexGrid>}
-                </Block>
-            )
+            return this.imageModalHeight;
         }
+    }
+    getImageModalWidth() {
+        if (this.state.imageModalWidth <= 450) {
+            return this.state.imageModalWidth * 2;
+        } else if (this.state.imageModalWidth > window.outerWidth) {
+            return window.outerWidth;
+        } else {
+            return this.imageModalWidth;
+        }
+    }
+
+    async onImageClick(data) {
+        this.setState({
+            imageModalOpen: true,
+            imageModalTitle: data.title,
+            imageModalHeight: data.imageHeightOriginal,
+            imageModalWidth: data.imageWidthOriginal,
+            imageModalUrl: data.imageUrlOriginal
+        })
+    }
+
+    onImageModalClose() {
+        this.setState({
+            imageModalOpen: false,
+            imageModalTitle: '',
+            imageModalHeight: 0,
+            imageModalWidth: 0,
+            imageModalUrl: ''
+        })
     }
 
     getListItems(listIndex) {
@@ -175,15 +252,23 @@ export default class Feed extends Component {
 
     mapGifsData(data) {
         return data.map(g => {
-            return {
-                id: g.id,
-                imageUrlSmall: g.images.fixed_width.url,
-                imageUrlMedium: g.images.downsized.url,
-                imageHeightSmall: g.images.fixed_width.height,
-                imageWidthSmall: g.images.fixed_width.width,
-                imageWidthMedium: config.DEFAULT_IMAGE_SIZE,
-                imageHeightMedium: config.DEFAULT_IMAGE_SIZE - Math.abs(g.images.downsized.height - g.images.downsized.width)
-            }
+            return this.mapGifData(g);
         });
+    }
+
+    mapGifData(g) {
+        return {
+            id: g.id,
+            title: g.title,
+            imageUrlSmall: g.images.fixed_width.url,
+            imageUrlMedium: g.images.downsized.url,
+            imageUrlOriginal: g.images.original.url,
+            imageHeightOriginal: g.images.original.height,
+            imageWidthOriginal: g.images.original.width,
+            imageHeightSmall: g.images.fixed_width.height,
+            imageWidthSmall: g.images.fixed_width.width,
+            imageWidthMedium: config.DEFAULT_IMAGE_SIZE,
+            imageHeightMedium: config.DEFAULT_IMAGE_SIZE - Math.abs(g.images.downsized.height - g.images.downsized.width)
+        }
     }
 }

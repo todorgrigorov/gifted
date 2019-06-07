@@ -18,6 +18,8 @@ export default props => {
             {props.gifs &&
                 props.gifs.map(gif =>
                     <ImageContainer
+                        {...gif}
+                        onImageClick={props.onImageClick}
                         key={gif.id}
                         id={gif.id}
                         imageUrl={props.size === 'medium' ? gif.imageUrlMedium : gif.imageUrlSmall}

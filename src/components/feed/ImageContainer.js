@@ -6,11 +6,12 @@ export default props => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: $theme.lighting.shadow500
+        boxShadow: $theme.lighting.shadow500,
+        cursor: 'pointer'
     }));
 
     return (
-        <Container width={props.imageWidth} height={props.imageHeight}>
+        <Container onClick={async () => await props.onImageClick(props)} width={props.imageWidth} height={props.imageHeight}>
             <img
                 alt={props.id}
                 src={props.imageUrl}
